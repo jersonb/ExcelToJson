@@ -14,12 +14,12 @@ namespace ExcelToJson.Api.Controllers
         /// <param name="json"></param>
         /// <returns>Dowload file excel</returns>
         [HttpPost]
-        [Route("object")]
-        public IActionResult Post([FromBody] object json)
+        [Route("object/{tyepe?}")]
+        public IActionResult Post([FromBody] object json, string type = null)
         {
-            JsonToXlsx jsonToXlsx = json.ToString();
+            var xlsx = ConvertTo.Xlsx(json.ToString());
 
-            return File(jsonToXlsx.MemoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "test.xlsx");
+            return File(xlsx.MemoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "test.xlsx");
         }
 
         /// <summary>
@@ -33,9 +33,7 @@ namespace ExcelToJson.Api.Controllers
         {
             var stream = upload.OpenReadStream();
 
-            XlsxToJson xlsxToJson = stream;
-
-            return Ok(xlsxToJson.Json);
+            return Ok(ConvertTo.Json(stream));
         }
     }
 }
